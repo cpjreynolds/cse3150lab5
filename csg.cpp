@@ -5,9 +5,11 @@
 #include <iostream>
 #include <sstream>
 #include <charconv>
+#include <system_error>
 #include <vector>
 #include <map>
 #include <fstream>
+#include <iomanip>
 
 using std::istream, std::ostringstream;
 using std::pair, std::map;
@@ -204,7 +206,10 @@ map<pair<int, int>, int> parse(const std::string& fname)
     std::ifstream ifile(fname);
     if (!ifile.is_open()) {
         ostringstream output;
-        output << "error: " << fname << ": no such file";
+        output << "error: " << fname << ": ";
+        output << std::make_error_condition(
+                      std::errc::no_such_file_or_directory)
+                      .message();
         throw std::runtime_error(output.str());
     }
     else {
@@ -216,13 +221,13 @@ map<pair<int, int>, int> parse(const std::string& fname)
 std::ostream& operator<<(std::ostream& os,
                          const pair<pair<int, int>, int>& edge)
 {
-    return os << "{" << edge.first.first << "} =[" << edge.second << "]=> {"
+    return os << "{" << edge.first.first << " =(" << edge.second << ")=> "
               << edge.first.second << "}";
 }
 
 std::ostream& operator<<(std::ostream& os, const pair<int, int>& edge)
 {
-    return os << "{" << edge.first << "} => {" << edge.second << "}";
+    return os << "{" << edge.first << " => " << edge.second << "}";
 }
 
 std::ostream& operator<<(std::ostream& os,
