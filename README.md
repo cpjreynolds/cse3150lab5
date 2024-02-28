@@ -12,7 +12,7 @@ To ease the input of graphs into the program - and to have a little fun - I crea
 
 ## Description
 
-A `.csg` file consists of one or more lines, each consisting of a comma-separated list of numeric vertex labels alternating with edge weights in the domain {1, -1}.
+A `.csg` file consists of one or more lines, each consisting of a comma-separated list of numeric vertex labels alternating with edge weights.
 
 A `.csg` file describes a single graph.
 
@@ -31,6 +31,19 @@ and
 
 specify the same graph.
 
+The symbols `+` and `-` may be used in lieu of comma-separators and explicit
+edge weights. `{+, -}` maps to `{1, -1}`.
+
+```
+0,1,1,-1,2
+```
+and
+```
+0+1-2
+```
+
+specify the same graph.
+
 ## Specification
 
 ```ebnf
@@ -39,13 +52,16 @@ newline = ? U+000A ? .
 nonzero_digit = "1" … "9" .
 digit = "0" | nonzero_digit .
 number = nonzero_digit { digit } .
-nonnegative_integer = "0" | ["+"] number .
+nonnegative_integer = "0" | number .
+integer = ["-"] nonnegative_integer .
 
 vertex = nonnegative_integer .
-edge_weight = "1" | "-1" .
+edge_weight = "," integer "," .
+alt_edge_weight = "+" | "-" .
+edge = edge_weight | alt_edge_weight .
 
 csg = line { newline line } [ newline ].
 
-line = vertex "," edge_weight "," vertex { "," edge_weight "," vertex } .
+line = vertex edge vertex { edge vertex } .
 
 ```
