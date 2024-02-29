@@ -43,7 +43,7 @@ OBJECTS:=$(SOURCES:.cpp=.o)
 # only the testing main file
 #TSOURCES:=$(filter-out lab2.cpp,$(SOURCES))
 
-.PHONY: all clean check run leaks
+.PHONY: all clean check run leaks runtest
 
 all: $(RUNTARGET) $(TESTTARGET)
 
@@ -52,6 +52,9 @@ check: $(TESTTARGET)
 
 run: $(RUNTARGET)
 	./$(RUNTARGET)
+
+runtest: $(RUNTARGET)
+	./$(RUNTARGET) tmat-1.txt tmat0.txt tmat1.txt
 
 $(TESTTARGET): $(SOURCES)
 	$(CXX) $(CPPFLAGS) -DTESTING $(CXXFLAGS) $^ -o $@
