@@ -51,7 +51,7 @@ adjmat::adjmat(const std::map<std::pair<int, int>, int>& edges)
     _data = std::vector<int>(_dim * _dim, _inf);
     for (const auto& [vertices, wt] : edges) {
         auto& [v1, v2] = vertices;
-        (*this)(v1, v2) = wt;
+        (*this)[{v1, v2}] = wt;
     }
 }
 
@@ -168,19 +168,19 @@ ostream& operator<<(ostream& os, const adjmat& self)
         // adjacencies
         string val;
         for (auto c = 0u; c < self.dim() - 1; ++c) {
-            if (self._inf == self[{r, c}]) {
+            if (self._inf == self(r, c)) {
                 val = string(wide - 1, ' ') + "∞";
             }
             else {
-                val = std::to_string(self[{r, c}]);
+                val = std::to_string(self(r, c));
             }
             os << std::setw(wide) << val << VBAR;
         }
-        if (self._inf == self[{r, self.dim() - 1}]) {
+        if (self._inf == self(r, self.dim() - 1)) {
             val = string(wide - 1, ' ') + "∞";
         }
         else {
-            val = std::to_string(self[{r, self.dim() - 1}]);
+            val = std::to_string(self(r, self.dim() - 1));
         }
 
         os << std::setw(wide) << val << DVBAR << '\n';

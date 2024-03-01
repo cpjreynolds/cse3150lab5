@@ -19,30 +19,31 @@ public:
     adjmat(const std::vector<std::vector<int>>& data);
     adjmat(const std::map<std::pair<int, int>, int>& edges);
 
-    // operator() indexes by mapping vertex labels to memory locations
-    int& operator()(const int rv, const int cv)
+    // operator() indexes with "true" index pairs corresponding to memory
+    int& operator()(const int r, const int c) { return _data.at(r * _dim + c); }
+
+    const int& operator()(const int r, const int c) const
     {
-        return operator[]({_vmap.at(rv), _vmap.at(cv)});
+        return _data.at(r * _dim + c);
     }
 
-    const int& operator()(const int rv, const int cv) const
-    {
-        return operator[]({_vmap.at(rv), _vmap.at(cv)});
-    }
-
-    // operator[] indexes with "true" index pairs corresponding to memory
+    // operator[] indexes by mapping vertex labels to memory locations
     int& operator[](const std::pair<size_t, size_t>& idx)
     {
-        return _data.at(idx.first * _dim + idx.second);
+        return operator()(_vmap.at(idx.first), _vmap.at(idx.second));
     }
     const int& operator[](const std::pair<size_t, size_t>& idx) const
     {
-        return _data.at(idx.first * _dim + idx.second);
+        return operator()(_vmap.at(idx.first), _vmap.at(idx.second));
     }
 
     size_t dim() const { return _dim; }
     // assigns a value to map to infinity
-    void map_inf(const int& i) { _inf = i; }
+    void infmap(const int& i) { _inf = i; }
+
+    void vmap(const std::map<int, size_t>& nvmap) { _vmap = nvmap; }
+    std::map<int, size_t>& vmap() { return _vmap; }
+    const std::map<int, size_t>& vmap() const { return _vmap; }
 
     friend std::istream& operator>>(std::istream&, adjmat&);
     friend std::ostream& operator<<(std::ostream&, const adjmat&);
@@ -56,8 +57,8 @@ private:
     static std::map<int, size_t>
     gen_vmap(const std::map<std::pair<int, int>, int>& edges);
 
-    // maps vertex label to index
     size_t _dim;
+    // maps vertex label to index
     std::map<int, size_t> _vmap = default_vmap(_dim);
     std::vector<int> _data;
     // maps a specific value to infinity for printing

@@ -29,6 +29,12 @@ endif
 
 CXXFLAGS=-Wall -g --std=c++20
 
+# fix for libunwind issue on macos
+ifeq ($(uname_S),Darwin)
+CXXFLAGS += -Wl,-ld_classic
+endif
+
+
 # testing target
 TESTTARGET=$(PROJECT)test.out
 # runnable target
@@ -43,7 +49,7 @@ OBJECTS:=$(SOURCES:.cpp=.o)
 # only the testing main file
 #TSOURCES:=$(filter-out lab2.cpp,$(SOURCES))
 
-.PHONY: all clean check run leaks runtest
+.PHONY: all clean check run leaks runtest barbell
 
 all: $(RUNTARGET) $(TESTTARGET)
 
@@ -55,6 +61,9 @@ run: $(RUNTARGET)
 
 runtest: $(RUNTARGET)
 	./$(RUNTARGET) tmat-1.txt tmat0.txt tmat1.txt
+
+barbell: $(RUNTARGET)
+	./$(RUNTARGET) barbell.csg
 
 $(TESTTARGET): $(SOURCES)
 	$(CXX) $(CPPFLAGS) -DTESTING $(CXXFLAGS) $^ -o $@
