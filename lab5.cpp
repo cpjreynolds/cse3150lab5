@@ -50,10 +50,9 @@ static constexpr uint8_t csgf = 0b10;
 int main(int argc, char** argv)
 try {
     uint8_t flags = 0;
-
     std::string csgfname;
-
     int opt;
+
     while ((opt = getopt(argc, argv, "ic:")) != -1) {
         switch (opt) {
         case 'i':
@@ -87,7 +86,6 @@ try {
         result = exact0paths(edges);
     }
     else {
-        std::cout << optind << '\n';
         result = do_3file_input(argv + optind);
     }
 

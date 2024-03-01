@@ -10,8 +10,12 @@
 class adjmat {
 public:
     adjmat() : _dim{0} {};
-    adjmat(const std::vector<int>& data, size_t dim)
-        : _dim{dim}, _data{data} {};
+    adjmat(const std::vector<int>& data, size_t dim) : _dim{dim}, _data{data}
+    {
+        if (_data.size() != _dim * _dim) {
+            throw std::logic_error("matrix dimension/data mismatch");
+        }
+    };
 
     adjmat(size_t dim, const int& val) : _dim{dim}, _data(dim * dim, val){};
 
@@ -47,6 +51,11 @@ public:
 
     friend std::istream& operator>>(std::istream&, adjmat&);
     friend std::ostream& operator<<(std::ostream&, const adjmat&);
+
+    friend bool operator==(const adjmat& lhs, const adjmat& rhs)
+    {
+        return lhs._dim == rhs._dim && lhs._data == rhs._data;
+    }
 
 private:
     // returns vertices from an edge set.

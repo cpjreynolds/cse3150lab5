@@ -1,6 +1,7 @@
 #include <array>
 #include "paths.hpp"
 
+// initialize D[-1], D[0], D[1] from a single adjacency matrix
 static std::array<adjmat, 3> init_adjmats(const adjmat& mat)
 {
     auto blank = adjmat(mat.dim(), 2);
@@ -25,17 +26,20 @@ static std::array<adjmat, 3> init_adjmats(const adjmat& mat)
     return mats;
 }
 
+// runs the assignment algorithm from an edge set.
 adjmat exact0paths(const std::map<std::pair<int, int>, int>& edges)
 {
     return exact0paths(adjmat(edges));
 }
 
+// runs the assignment algorithm from a single adjacency matrix
 adjmat exact0paths(const adjmat& mat)
 {
     auto mats = init_adjmats(mat);
     return exact0paths(mats[0], mats[1], mats[2]);
 }
 
+// runs the assignment algorithm.
 adjmat exact0paths(adjmat& dm1, adjmat& d0, adjmat& d1)
 {
     int n = d0.dim();
@@ -61,3 +65,36 @@ adjmat exact0paths(adjmat& dm1, adjmat& d0, adjmat& d1)
 
     return d0;
 }
+
+#ifdef TESTING
+#include "doctest.h"
+
+TEST_CASE("exact0paths")
+{
+    adjmat zero(4, 0);
+
+    SUBCASE("exact0paths(dm1,d0,d1")
+    {
+        adjmat tm1{{-1, 2, 2, 2}, {2, 2, 2, 2}, {2, 2, 2, 2}, {2, 2, 2, 2}};
+        adjmat t0{{2, 2, 2, 2}, {2, 2, 2, 2}, {2, 2, 2, 2}, {2, 2, 2, 2}};
+        adjmat t1{{2, 1, 2, 2}, {2, 2, 1, 2}, {2, 2, 2, 1}, {1, 2, 2, 2}};
+
+        CHECK(exact0paths(tm1, t0, t1) == zero);
+    }
+
+    SUBCASE("exact0paths(adjmat)")
+    {
+        adjmat m{{-1, 1, 2, 2}, {2, 2, 1, 2}, {2, 2, 2, 1}, {1, 2, 2, 2}};
+        CHECK(exact0paths(m) == zero);
+    }
+
+    SUBCASE("exact0paths(edges)")
+    {
+        std::map<std::pair<int, int>, int> edges{
+            {{1, 1}, -1}, {{1, 2}, 1}, {{2, 3}, 1}, {{3, 4}, 1}, {{4, 1}, 1}};
+
+        CHECK(exact0paths(edges) == zero);
+    }
+}
+
+#endif

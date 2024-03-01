@@ -61,7 +61,7 @@ adjmat::adjmat(std::initializer_list<std::initializer_list<int>> data)
     if (data.size() != 0) {
         for (const auto& row : data) {
             if (_dim != row.size()) {
-                throw std::logic_error("incompatible matrix columns");
+                throw std::logic_error("matrix dimension/data mismatch");
             }
             _data.insert(_data.cend(), row);
         }
@@ -73,7 +73,7 @@ adjmat::adjmat(const std::vector<std::vector<int>>& data) : _dim{data.size()}
     if (data.size() != 0) {
         for (const auto& row : data) {
             if (_dim != row.size()) {
-                throw std::logic_error("incompatible matrix columns");
+                throw std::logic_error("matrix dimension/data mismatch");
             }
             _data.insert(_data.cend(), row.cbegin(), row.cend());
         }
@@ -228,3 +228,80 @@ istream& operator>>(istream& is, adjmat& self)
     self = adjmat(vals); // move into
     return is;
 }
+
+#ifdef TESTING
+#include "doctest.h"
+
+#include <sstream>
+
+TEST_CASE("adjmat")
+{
+    SUBCASE("operator>>")
+    {
+        std::istringstream input("1 2 3\n4 5 6\n7 8 9");
+        adjmat tmat{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+        adjmat m;
+        input >> m;
+
+        CHECK(m == tmat);
+    }
+
+    SUBCASE("adjmat::adjmat(edges)")
+    {
+        std::map<std::pair<int, int>, int> edges{
+            {{1, 1}, 1}, {{2, 2}, 1}, {{3, 3}, 1}, {{4, 4}, 1}, {{5, 5}, 1}};
+
+        adjmat tmat{{1, 2, 2, 2, 2},
+                    {2, 1, 2, 2, 2},
+                    {2, 2, 1, 2, 2},
+                    {2, 2, 2, 1, 2},
+                    {2, 2, 2, 2, 1}};
+
+        CHECK(adjmat(edges) == tmat);
+    }
+
+    SUBCASE("adjmat::adjmat(size_t, int)")
+    {
+        adjmat tmat{{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
+        CHECK(adjmat(3, 1) == tmat);
+    }
+
+    SUBCASE("adjmat::adjmat(vector<vector<int>>)")
+    {
+        adjmat tmat{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        std::vector<std::vector<int>> tvec{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        CHECK(tmat == tvec);
+    }
+
+    SUBCASE("adjmat::adjmat(vector<int>, size_t)")
+    {
+        adjmat tmat{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        std::vector<int> tvec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        CHECK(tmat == adjmat(tvec, 3));
+    }
+
+    SUBCASE("adjmat::operator()")
+    {
+        adjmat tmat{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+        for (auto i = 0u; i < tmat.dim(); ++i) {
+            for (auto j = 0u; j < tmat.dim(); ++j) {
+                CHECK(tmat(i, j) == i * tmat.dim() + j + 1);
+            }
+        }
+    }
+
+    SUBCASE("adjmat::operator[]")
+    {
+        std::map<std::pair<int, int>, int> edges{
+            {{1, 1}, 1}, {{2, 2}, 1}, {{3, 3}, 1}, {{4, 4}, 1}, {{5, 5}, 1}};
+        adjmat tmat(edges);
+
+        for (auto& e : edges) {
+            CHECK(tmat[e.first] == e.second);
+        }
+    }
+}
+
+#endif

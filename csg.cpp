@@ -117,7 +117,6 @@ void parse_line(map<pair<int, int>, int>& edges, parse_context& ctx)
 
     // return early if the line is empty or only whitespace
     if (eat_space(line, ctx) == ctx.line.size()) {
-        std::cerr << "empty";
         return;
     }
 
@@ -218,7 +217,7 @@ map<pair<int, int>, int> parse(const std::string& fname)
 std::ostream& operator<<(std::ostream& os,
                          const pair<pair<int, int>, int>& edge)
 {
-    return os << "{" << edge.first.first << " ━❮" << edge.second << "❯━» "
+    return os << "{" << edge.first.first << " ━━❮" << edge.second << "❯━» "
               << edge.first.second << "}";
 }
 
@@ -235,5 +234,25 @@ std::ostream& operator<<(std::ostream& os,
     }
     return os;
 }
+
+#ifdef TESTING
+#include "doctest.h"
+
+TEST_CASE("csg::parse(istream&)")
+{
+    std::istringstream in1("1+2-3+4\n1-4");
+    std::istringstream in2("1,1,2,-1,3,1,4\n1,-1,4");
+
+    std::map<std::pair<int, int>, int> edges{
+        {{1, 2}, 1}, {{2, 3}, -1}, {{3, 4}, 1}, {{1, 4}, -1}};
+
+    auto t1 = parse(in1);
+    auto t2 = parse(in2);
+
+    CHECK(t1 == edges);
+    CHECK(t2 == edges);
+}
+
+#endif
 
 } // namespace csg
