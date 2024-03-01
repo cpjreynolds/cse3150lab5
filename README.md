@@ -21,7 +21,9 @@ lab5.out -i                 read .csg file from stdin
 ### Note
 
 To compile **without** support for terminal colors, append `NOCOLOR=1` to the
-`make` command. **e.g.** `make run NOCOLOR=1`
+`make` command. 
+
+**e.g.** `make run NOCOLOR=1`
 
 # Comma-separated graph (csg) format
 
