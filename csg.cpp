@@ -235,6 +235,8 @@ std::ostream& operator<<(std::ostream& os,
     return os;
 }
 
+} // namespace csg
+
 #ifdef TESTING
 #include "doctest.h"
 
@@ -246,13 +248,11 @@ TEST_CASE("csg::parse(istream&)")
     std::map<std::pair<int, int>, int> edges{
         {{1, 2}, 1}, {{2, 3}, -1}, {{3, 4}, 1}, {{1, 4}, -1}};
 
-    auto t1 = parse(in1);
-    auto t2 = parse(in2);
+    auto t1 = csg::parse(in1);
+    auto t2 = csg::parse(in2);
 
     CHECK(t1 == edges);
     CHECK(t2 == edges);
 }
 
 #endif
-
-} // namespace csg
