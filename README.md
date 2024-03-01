@@ -1,5 +1,15 @@
 # CSE3150 - Lab 5
 
+## Usage
+
+```
+lab5.out f(-1) f(0) f(1)    read initial adjacency matrices
+lab5.out -c file            read .csg file
+lab5.out -i                 read .csg file from stdin
+```
+
+## Compilation
+
 `make all` to compile both testing and `main()` binaries.
 
 `make check` to compile and run tests.
