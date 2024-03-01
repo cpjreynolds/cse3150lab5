@@ -86,10 +86,12 @@ static constexpr string_view DHBAR = "\u2550";
 static constexpr string_view DCROSS = "\u256c";
 
 static constexpr string_view DVDLEFT = "\u2563";
+static constexpr string_view DVDRIGHT = "\u2560";
 static constexpr string_view DVSRIGHT = "\u255f";
 static constexpr string_view DVSLEFT = "\u2562";
 
 static constexpr string_view DHDUP = "\u2569";
+static constexpr string_view DHDDOWN = "\u2566";
 
 static constexpr string_view DUPRIGHT = "\u255a";
 static constexpr string_view DUPLEFT = "\u255d";
@@ -125,14 +127,14 @@ ostream& operator<<(ostream& os, const adjmat& self)
     }
 
     // top line
-    os << string(wide + 1, ' ') << DDOWNRIGHT;
+    os << DDOWNRIGHT << hdwide << DHDDOWN;
     for (auto i = 0u; i < self.dim() - 1; ++i) {
         os << hdwide << DHDOWN;
     }
     os << hdwide << DDOWNLEFT << '\n';
 
     // vertex column label line
-    os << string(wide + 1, ' ') << DVBAR;
+    os << DVBAR << BOLD << "𝑽" << RESET << string(wide - 1, ' ') << DVBAR;
     auto verts = self._vmap | std::views::keys;
     for (auto it = verts.begin(); it != std::prev(verts.end()); ++it) {
         os << BOLD << std::setw(wide) << *it << RESET << VBAR;
@@ -140,7 +142,7 @@ ostream& operator<<(ostream& os, const adjmat& self)
     os << BOLD << std::setw(wide) << verts.back() << RESET << DVBAR << '\n';
 
     // third line
-    os << DDOWNRIGHT << hdwide << DCROSS;
+    os << DVDRIGHT << hdwide << DCROSS;
     string hsep = hdwide;
     for (auto i = 0u; i < wide * (self.dim() - 1) + self.dim() - 1; ++i) {
         if (i % (wide + 1) == 0) {
@@ -174,7 +176,10 @@ ostream& operator<<(ostream& os, const adjmat& self)
             else {
                 val = std::to_string(self(r, c));
             }
-            os << std::setw(wide) << val << VBAR;
+            if (self(r, c) == 0) {
+                os << MAGENTA;
+            }
+            os << std::setw(wide) << val << RESET << VBAR;
         }
         if (self._inf == self(r, self.dim() - 1)) {
             val = string(wide - 1, ' ') + "∞";
@@ -182,8 +187,11 @@ ostream& operator<<(ostream& os, const adjmat& self)
         else {
             val = std::to_string(self(r, self.dim() - 1));
         }
+        if (self(r, self.dim() - 1) == 0) {
+            os << MAGENTA;
+        }
 
-        os << std::setw(wide) << val << DVBAR << '\n';
+        os << std::setw(wide) << val << RESET << DVBAR << '\n';
         // separator
         if (r != self.dim() - 1) {
             os << DVSRIGHT << hswide << DVSH;

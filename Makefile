@@ -34,6 +34,10 @@ ifeq ($(uname_S),Darwin)
 CXXFLAGS += -Wl,-ld_classic
 endif
 
+ifdef NOCOLOR
+	CPPFLAGS += -DNOCOLOR
+endif
+
 
 # testing target
 TESTTARGET=$(PROJECT)test.out
@@ -49,7 +53,7 @@ OBJECTS:=$(SOURCES:.cpp=.o)
 # only the testing main file
 #TSOURCES:=$(filter-out lab2.cpp,$(SOURCES))
 
-.PHONY: all clean check run leaks runtest barbell
+.PHONY: all clean check run leaks barbell
 
 all: $(RUNTARGET) $(TESTTARGET)
 
@@ -57,13 +61,10 @@ check: $(TESTTARGET)
 	./$(TESTTARGET)
 
 run: $(RUNTARGET)
-	./$(RUNTARGET)
-
-runtest: $(RUNTARGET)
 	./$(RUNTARGET) tmat-1.txt tmat0.txt tmat1.txt
 
 barbell: $(RUNTARGET)
-	./$(RUNTARGET) barbell.csg
+	./$(RUNTARGET) -c barbell.csg
 
 $(TESTTARGET): $(SOURCES)
 	$(CXX) $(CPPFLAGS) -DTESTING $(CXXFLAGS) $^ -o $@

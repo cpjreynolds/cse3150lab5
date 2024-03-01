@@ -26,8 +26,8 @@ static std::string usage()
 // does the thing the assignment page requires
 static adjmat do_3file_input(char** argv)
 {
-    std::ifstream ifiles[] = {ifstream(argv[1]), ifstream(argv[2]),
-                              ifstream(argv[3])};
+    std::ifstream ifiles[] = {ifstream(argv[0]), ifstream(argv[1]),
+                              ifstream(argv[2])};
 
     for (int i = 0; i < 3; ++i) {
         if (!ifiles[i].is_open()) {
@@ -87,6 +87,7 @@ try {
         result = exact0paths(edges);
     }
     else {
+        std::cout << optind << '\n';
         result = do_3file_input(argv + optind);
     }
 

@@ -4,7 +4,14 @@
 
 `make check` to compile and run tests.
 
-`make run` to compile and run `main()`.
+`make run` to compile and execute `./lab5.out tmat-1.txt tmat0.txt tmat1.txt`
+
+`make barbell` to compile and execute `./lab5.out -c barbell.csg`
+
+### Note
+
+To compile **without** support for terminal colors, append `NOCOLOR=1` to the
+`make` command. **e.g.** `make run NOCOLOR=1`
 
 # Comma-separated graph (csg) format
 
