@@ -14,7 +14,8 @@ lab5.out -i                 read .csg file from stdin
 The left 'bell' contains nodes `1..7` and the right contains `9..16`.
 The two 'bells' are connected by node `8` between nodes `1` and `9`.
 
-Running `lab5.out -c barbell.csg` outputs the matrix showing the zero cost paths between nodes.
+Running `lab5.out -c barbell.csg` outputs the matrix demonstrating that there
+are zero-cost paths starting from nodes `1..7` to all nodes `9..16`.
 
 ## Compilation
 
