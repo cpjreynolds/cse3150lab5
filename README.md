@@ -17,6 +17,8 @@ The two 'bells' are connected by node `8` between nodes `1` and `9`.
 Running `lab5.out -c barbell.csg` outputs the matrix demonstrating that there
 are zero-cost paths starting from nodes `1..7` to all nodes `9..16`.
 
+Also note my code does not consider degenerate paths of length 0, but if `0`s are input along the diagonal the program and algorithm will still function correctly.
+
 ### Example
 ```
 $ ./lab5.out -c barbell-8.csg
